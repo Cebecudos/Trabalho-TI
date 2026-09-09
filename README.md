@@ -38,4 +38,4 @@ Desenvolver uma interface funcional para abertura e resolução de chamados de s
 5. Acesse `http://localhost:3000`
 6. Login: admin/admin ou user/user
 
-## Estrutura do Projeto
+
