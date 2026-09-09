@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Abrir Chamado - TI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #f0f4fa 0%, #d9e2ed 100%);
+            padding: 1.5rem;
+        }
+        .card {
+            background: #ffffff;
+            max-width: 720px;
+            width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 50, 0.25);
+            padding: 2rem 2.5rem;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.25rem;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 1.25rem;
+            justify-content: space-between;
+        }
+        .header .left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header .icon-circle {
+            background: #1a5cff;
+            color: #fff;
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #0b1a33;
+            letter-spacing: -0.5px;
+        }
+        .header h1 small {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #4a637f;
+            display: block;
+            margin-top: 2px;
+        }
+        .logout-btn {
+            background: #eef2f7;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #1f334a;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logout-btn:hover {
+            background: #dce3ec;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1f334a;
+            margin-bottom: 0.4rem;
+        }
+        .form-group label .required {
+            color: #d1453b;
+            margin-left: 2px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1.5px solid #dce3ec;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fafcff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #1a5cff;
+            box-shadow: 0 0 0 4px rgba(26, 92, 255, 0.12);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        .file-upload-wrapper {
+            position: relative;
+        }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .file-upload-box {
+            border: 1.5px dashed #bcc9db;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            background: #f4f8ff;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #2a4a6e;
+            font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+            pointer-events: none;
+        }
+        .file-upload-box i {
+            font-size: 1.4rem;
+            color: #1a5cff;
+        }
+        .file-upload-box .file-name {
+            color: #0b1a33;
+            font-weight: 400;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 180px;
+        }
+        .file-upload-wrapper:hover .file-upload-box {
+            background: #eaf1fe;
+            border-color: #1a5cff;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background: #1a5cff;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-top: 0.75rem;
+        }
+        .btn-submit:hover {
+            background: #0f4ad6;
+            box-shadow: 0 8px 20px -6px rgba(26, 92, 255, 0.4);
+        }
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0b1a33;
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            pointer-events: none;
+            z-index: 999;
+            font-size: 1rem;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0px);
+        }
+        .toast i {
+            font-size: 1.2rem;
+            color: #5bff8a;
+        }
+        @media (max-width:600px) {
+            .card {
+                padding: 1.5rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .header .icon-circle {
+                width: 44px;
+                height: 44px;
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="left">
+                <div class="icon-circle"><i class="fas fa-headset"></i></div>
+                <h1>
+                    Abrir Chamado
+                    <small>Suporte de TI — Registre sua solicitação</small>
+                </h1>
+            </div>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+        </div>
+
+        <form id="chamadoForm" novalidate>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="solicitante">Solicitante <span class="required">*</span></label>
+                    <input type="text" id="solicitante" placeholder="Seu nome completo" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail <span class="required">*</span></label>
+                    <input type="email" id="email" placeholder="seu@email.com" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="titulo">Título do chamado <span class="required">*</span></label>
+                <input type="text" id="titulo" placeholder="Ex: Impressora não funciona" required />
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição detalhada <span class="required">*</span></label>
+                <textarea id="descricao" placeholder="Descreva o problema com o máximo de detalhes..." required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prioridade">Prioridade</label>
+                    <select id="prioridade">
+                        <option value="Baixa">Baixa</option>
+                        <option value="Média" selected>Média</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Crítica">Crítica</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria">
+                        <option value="Hardware">Hardware</option>
+                        <option value="Software" selected>Software</option>
+                        <option value="Rede">Rede</option>
+                        <option value="Segurança">Segurança</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="anexo">Anexo (opcional)</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="anexo" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+                    <div class="file-upload-box">
+                        <i class="fas fa-paperclip"></i>
+                        <span>Selecionar arquivo</span>
+                        <span class="file-name" id="fileName">nenhum arquivo</span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                <i class="fas fa-paper-plane"></i> Abrir Chamado
+            </button>
+        </form>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Chamado aberto com sucesso!</span>
+    </div>
+
+    <script>
+        (function() {
+            const loggedUser = JSON.parse(sessionStorage.getItem('loggedUser') || 'null');
+            if (!loggedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const form = document.getElementById('chamadoForm');
+            const solicitante = document.getElementById('solicitante');
+            const email = document.getElementById('email');
+            const titulo = document.getElementById('titulo');
+            const descricao = document.getElementById('descricao');
+            const prioridade = document.getElementById('prioridade');
+            const categoria = document.getElementById('categoria');
+            const anexo = document.getElementById('anexo');
+            const fileName = document.getElementById('fileName');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                sessionStorage.removeItem('loggedUser');
+                window.location.href = 'login.html';
+            });
+
+            anexo.addEventListener('change', function() {
+                fileName.textContent = this.files && this.files.length > 0 ? this.files[0].name : 'nenhum arquivo';
+            });
+
+            function showToast(msg, isError = false) {
+                toastMessage.textContent = msg;
+                toast.classList.add('show');
+                const icon = toast.querySelector('i');
+                if (isError) {
+                    icon.className = 'fas fa-exclamation-circle';
+                    icon.style.color = '#ffb347';
+                } else {
+                    icon.className = 'fas fa-check-circle';
+                    icon.style.color = '#5bff8a';
+                }
+                clearTimeout(window.toastTimer);
+                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+            }
+
+            function resetForm() {
+                form.reset();
+                fileName.textContent = 'nenhum arquivo';
+                document.querySelectorAll('.form-group input, .form-group textarea, .form-group select')
+                    .forEach(el => el.style.borderColor = '');
+            }
+
+            function generateTicketNumber() {
+                const now = new Date();
+                const y = now.getFullYear().toString().slice(-2);
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const d = String(now.getDate()).padStart(2, '0');
+                const rand = String(Math.floor(100 + Math.random() * 900));
+                return `TI-${y}${m}${d}-${rand}`;
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                let valid = true;
+                const requiredFields = [solicitante, email, titulo, descricao];
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#d1453b';
+                        valid = false;
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (email.value.trim() && !emailPattern.test(email.value.trim())) {
+                    email.style.borderColor = '#d1453b';
+                    valid = false;
+                } else if (email.value.trim()) {
+                    email.style.borderColor = '';
+                }
+
+                if (!valid) {
+                    showToast('Preencha todos os campos obrigatórios corretamente.', true);
+                    return;
+                }
+
+                const formData = {
+                    id: Date.now(),
+                    numero: generateTicketNumber(),
+                    solicitante: solicitante.value.trim(),
+                    email: email.value.trim(),
+                    titulo: titulo.value.trim(),
+                    descricao: descricao.value.trim(),
+                    prioridade: prioridade.value,
+                    categoria: categoria.value,
+                    anexo: anexo.files && anexo.files.length > 0 ? anexo.files[0].name : null,
+                    dataAbertura: new Date().toISOString(),
+                    status: 'Aberto',
+                    resolvidoPor: null,
+                    dataResolucao: null
+                };
+
+                let chamados = JSON.parse(localStorage.getItem('chamados') || '[]');
+                chamados.push(formData);
+                localStorage.setItem('chamados', JSON.stringify(chamados));
+
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                showToast(`Chamado ${formData.numero} aberto com sucesso!`);
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fas fa-paper-plane"></i> Abrir Chamado';
+                resetForm();
+            });
+
+            document.querySelectorAll('.form-group input, .form-group textarea, .form-group select')
+                .forEach(el => {
+                    el.addEventListener('input', function() {
+                        if (this.value.trim()) this.style.borderColor = '';
+                    });
+                    el.addEventListener('change', function() {
+                        if (this.value.trim()) this.style.borderColor = '';
+                    });
+                });
+        })();
+    </script>
+
+</body>
+</html>

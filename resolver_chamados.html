@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resolver Chamados - TI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            background: #f0f4fa;
+            padding: 2rem 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 1.2rem 2rem;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            color: #0b1a33;
+        }
+        .header h1 i {
+            color: #1a5cff;
+            margin-right: 0.5rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        .btn-outline {
+            background: #eef2f7;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #1f334a;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-outline:hover {
+            background: #dce3ec;
+        }
+        .btn-primary {
+            background: #1a5cff;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary:hover {
+            background: #0f4ad6;
+        }
+        .btn-success {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        .filters select,
+        .filters input {
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            border: 1.5px solid #dce3ec;
+            background: #fafcff;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .filters label {
+            font-weight: 600;
+            color: #1f334a;
+        }
+        .chamados-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chamado-item {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+            border-left: 6px solid #1a5cff;
+        }
+        .chamado-item.resolvido {
+            border-left-color: #10b981;
+            opacity: 0.7;
+        }
+        .chamado-info {
+            flex: 2;
+            min-width: 200px;
+        }
+        .chamado-info strong {
+            font-size: 1.1rem;
+            color: #0b1a33;
+        }
+        .chamado-info .meta {
+            font-size: 0.85rem;
+            color: #4a637f;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .chamado-info .meta span {
+            background: #eef2f7;
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+        }
+        .chamado-actions {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .badge-status {
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .badge-aberto {
+            background: #fef3c7;
+            color: #b45309;
+        }
+        .badge-resolvido {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            max-width: 500px;
+            width: 90%;
+            padding: 2rem;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .modal h2 {
+            margin-bottom: 1rem;
+            color: #0b1a33;
+        }
+        .modal .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4a637f;
+        }
+        .modal .form-group {
+            margin-bottom: 1rem;
+        }
+        .modal .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1f334a;
+            margin-bottom: 0.3rem;
+        }
+        .modal .form-group input,
+        .modal .form-group select {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1.5px solid #dce3ec;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: #fafcff;
+            outline: none;
+        }
+        .modal .form-group input:focus,
+        .modal .form-group select:focus {
+            border-color: #1a5cff;
+            box-shadow: 0 0 0 4px rgba(26, 92, 255, 0.12);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0b1a33;
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0px);
+        }
+
+        @media (max-width:700px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header-actions {
+                justify-content: center;
+            }
+            .chamado-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .chamado-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-tasks"></i> Resolver Chamados</h1>
+            <div class="header-actions">
+                <button class="btn-primary" id="btnNovoUsuario"><i class="fas fa-user-plus"></i> Novo Usuário</button>
+                <button class="btn-outline" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <label for="filterStatus">Status:</label>
+            <select id="filterStatus">
+                <option value="todos">Todos</option>
+                <option value="Aberto">Aberto</option>
+                <option value="Resolvido">Resolvido</option>
+            </select>
+            <label for="filterPrioridade">Prioridade:</label>
+            <select id="filterPrioridade">
+                <option value="todas">Todas</option>
+                <option value="Baixa">Baixa</option>
+                <option value="Média">Média</option>
+                <option value="Alta">Alta</option>
+                <option value="Crítica">Crítica</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="Buscar por título ou nº" />
+            <button class="btn-outline" id="btnLimparFiltros"><i class="fas fa-undo"></i> Limpar</button>
+        </div>
+
+        <div id="chamadosContainer" class="chamados-list">
+            <!-- Renderizado via JS -->
+        </div>
+    </div>
+
+    <!-- Modal novo usuário -->
+    <div class="modal-overlay" id="modalUsuario">
+        <div class="modal">
+            <span class="close-modal" id="closeModalUsuario">&times;</span>
+            <h2>Cadastrar Novo Usuário</h2>
+            <form id="formNovoUsuario">
+                <div class="form-group">
+                    <label for="novoUsername">Usuário</label>
+                    <input type="text" id="novoUsername" required placeholder="Ex: jose.silva" />
+                </div>
+                <div class="form-group">
+                    <label for="novoPassword">Senha</label>
+                    <input type="password" id="novoPassword" required placeholder="Mínimo 4 caracteres" />
+                </div>
+                <div class="form-group">
+                    <label for="novoRole">Perfil</label>
+                    <select id="novoRole">
+                        <option value="user">Usuário (abrir chamados)</option>
+                        <option value="admin">Administrador (resolver)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
+                    <i class="fas fa-save"></i> Cadastrar
+                </button>
+            </form>
+            <div id="msgNovoUsuario" style="margin-top:0.5rem;color:#d1453b;text-align:center;"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" style="color:#5bff8a;"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        (function() {
+            const loggedUser = JSON.parse(sessionStorage.getItem('loggedUser') || 'null');
+            if (!loggedUser || loggedUser.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const container = document.getElementById('chamadosContainer');
+            const filterStatus = document.getElementById('filterStatus');
+            const filterPrioridade = document.getElementById('filterPrioridade');
+            const filterSearch = document.getElementById('filterSearch');
+            const btnLimpar = document.getElementById('btnLimparFiltros');
+            const btnLogout = document.getElementById('btnLogout');
+            const modalUsuario = document.getElementById('modalUsuario');
+            const closeModal = document.getElementById('closeModalUsuario');
+            const btnNovoUsuario = document.getElementById('btnNovoUsuario');
+            const formNovoUsuario = document.getElementById('formNovoUsuario');
+            const msgNovoUsuario = document.getElementById('msgNovoUsuario');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            function showToast(msg, isError = false) {
+                toastMessage.textContent = msg;
+                toast.classList.add('show');
+                const icon = toast.querySelector('i');
+                if (isError) {
+                    icon.className = 'fas fa-exclamation-circle';
+                    icon.style.color = '#ffb347';
+                } else {
+                    icon.className = 'fas fa-check-circle';
+                    icon.style.color = '#5bff8a';
+                }
+                clearTimeout(window.toastTimer);
+                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+
+            function getChamados() {
+                return JSON.parse(localStorage.getItem('chamados') || '[]');
+            }
+
+            function saveChamados(chamados) {
+                localStorage.setItem('chamados', JSON.stringify(chamados));
+            }
+
+            function render() {
+                const statusFilter = filterStatus.value;
+                const prioridadeFilter = filterPrioridade.value;
+                const search = filterSearch.value.toLowerCase().trim();
+
+                let chamados = getChamados();
+
+                if (statusFilter !== 'todos') {
+                    chamados = chamados.filter(c => c.status === statusFilter);
+                }
+                if (prioridadeFilter !== 'todas') {
+                    chamados = chamados.filter(c => c.prioridade === prioridadeFilter);
+                }
+                if (search) {
+                    chamados = chamados.filter(c =>
+                        c.titulo.toLowerCase().includes(search) ||
+                        c.numero.toLowerCase().includes(search)
+                    );
+                }
+
+                chamados.sort((a, b) => new Date(b.dataAbertura) - new Date(a.dataAbertura));
+
+                if (chamados.length === 0) {
+                    container.innerHTML =
+                        `<p style="text-align:center;color:#4a637f;padding:2rem;">Nenhum chamado encontrado.</p>`;
+                    return;
+                }
+
+                let html = '';
+                chamados.forEach(c => {
+                    const isResolvido = c.status === 'Resolvido';
+                    html += `
+                        <div class="chamado-item ${isResolvido ? 'resolvido' : ''}">
+                            <div class="chamado-info">
+                                <strong>${c.titulo}</strong>
+                                <div class="meta">
+                                    <span>#${c.numero}</span>
+                                    <span><i class="far fa-user"></i> ${c.solicitante}</span>
+                                    <span><i class="far fa-calendar-alt"></i> ${new Date(c.dataAbertura).toLocaleDateString()}</span>
+                                    <span><i class="fas fa-tag"></i> ${c.categoria}</span>
+                                    <span><i class="fas fa-flag"></i> ${c.prioridade}</span>
+                                    <span class="badge-status ${isResolvido ? 'badge-resolvido' : 'badge-aberto'}">${c.status}</span>
+                                </div>
+                                ${c.descricao ? `<div style="margin-top:0.3rem;color:#4a637f;font-size:0.9rem;">${c.descricao.substring(0,120)}${c.descricao.length>120?'...':''}</div>` : ''}
+                                ${isResolvido && c.resolvidoPor ? `<div style="font-size:0.8rem;color:#065f46;">Resolvido por ${c.resolvidoPor} em ${new Date(c.dataResolucao).toLocaleDateString()}</div>` : ''}
+                            </div>
+                            <div class="chamado-actions">
+                                ${!isResolvido ? `<button class="btn-success" data-id="${c.id}"><i class="fas fa-check"></i> Resolver</button>` : ''}
+                                <button class="btn-danger" data-id="${c.id}" data-action="delete"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                container.querySelectorAll('.btn-success').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = Number(this.dataset.id);
+                        resolverChamado(id);
+                    });
+                });
+                container.querySelectorAll('.btn-danger[data-action="delete"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = Number(this.dataset.id);
+                        if (confirm('Tem certeza que deseja excluir este chamado?')) {
+                            excluirChamado(id);
+                        }
+                    });
+                });
+            }
+
+            function resolverChamado(id) {
+                let chamados = getChamados();
+                const index = chamados.findIndex(c => c.id === id);
+                if (index === -1) return;
+                chamados[index].status = 'Resolvido';
+                chamados[index].resolvidoPor = loggedUser.username;
+                chamados[index].dataResolucao = new Date().toISOString();
+                saveChamados(chamados);
+                showToast('Chamado marcado como resolvido!');
+                render();
+            }
+
+            function excluirChamado(id) {
+                let chamados = getChamados();
+                chamados = chamados.filter(c => c.id !== id);
+                saveChamados(chamados);
+                showToast('Chamado excluído.', true);
+                render();
+            }
+
+            formNovoUsuario.addEventListener('submit', function(e) {
+                e.preventDefault();
+                msgNovoUsuario.textContent = '';
+
+                const username = document.getElementById('novoUsername').value.trim();
+                const password = document.getElementById('novoPassword').value.trim();
+                const role = document.getElementById('novoRole').value;
+
+                if (!username || !password) {
+                    msgNovoUsuario.textContent = 'Preencha todos os campos.';
+                    return;
+                }
+                if (password.length < 4) {
+                    msgNovoUsuario.textContent = 'A senha deve ter no mínimo 4 caracteres.';
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                if (users.find(u => u.username === username)) {
+                    msgNovoUsuario.textContent = 'Usuário já existe.';
+                    return;
+                }
+
+                users.push({ username, password, role });
+                localStorage.setItem('users', JSON.stringify(users));
+                showToast(`Usuário ${username} cadastrado com sucesso!`);
+                modalUsuario.classList.remove('active');
+                formNovoUsuario.reset();
+                msgNovoUsuario.textContent = '';
+            });
+
+            btnNovoUsuario.addEventListener('click', () => modalUsuario.classList.add('active'));
+            closeModal.addEventListener('click', () => modalUsuario.classList.remove('active'));
+            modalUsuario.addEventListener('click', function(e) {
+                if (e.target === this) modalUsuario.classList.remove('active');
+            });
+
+            btnLogout.addEventListener('click', function() {
+                sessionStorage.removeItem('loggedUser');
+                window.location.href = 'login.html';
+            });
+
+            filterStatus.addEventListener('change', render);
+            filterPrioridade.addEventListener('change', render);
+            filterSearch.addEventListener('input', render);
+            btnLimpar.addEventListener('click', function() {
+                filterStatus.value = 'todos';
+                filterPrioridade.value = 'todas';
+                filterSearch.value = '';
+                render();
+            });
+
+            render();
+        })();
+    </script>
+
+</body>
+</html>
