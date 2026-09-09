@@ -38,23 +38,6 @@ Desenvolver uma interface funcional para abertura e resolução de chamados de s
 5. Acesse `http://localhost:3000`
 6. Login: admin/admin ou user/user
 
-## Estrutura do Projeto
-
-projeto-ti-completo/
-├── backend/
-│ ├── routes/
-│ │ ├── auth.js
-│ │ ├── chamados.js
-│ │ └── users.js
-│ ├── database.js
-│ ├── server.js
-│ └── package.json
-├── frontend/
-│ ├── login.html
-│ ├── abrir_chamado.html
-│ └── resolver_chamados.html
-
-
 ## Integrantes
 Gabriel Adroaldo da Rocha Pens 
 Hadryan Porcino
