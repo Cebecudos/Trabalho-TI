@@ -12,12 +12,13 @@ Desenvolver uma interface funcional para abertura e resolução de chamados de s
 - JWT para autenticação
 
 ## Metodologia de desenvolvimento
-- **Metodologia:** Scrum (adaptado)
-- **Por que escolhemos:** Permite entregas rápidas e incrementais, com adaptação a mudanças de prioridade, ideal para um MVP que precisa ser validado constantemente.
+- **Metodologia:** Kanban
+- **Por que escolhemos:** Permite fluxo contínuo adaptável, ideal para um MVP com mudança frequentes de prioridade. O limite de WIP garante foco e qualidade nas entregas.
 
 ## Como vamos trabalhar
 - **Fluxo:** Backlog → A Fazer → Em Andamento → Revisão → Concluído
-- **Rotina de acompanhamento:** Reunião diária de 10-15 minutos no início de cada aula
+- **Limite de WIP:** Máximo de 2 tarefas por pessoa
+- **Rotina de acompanhamento:** Reunião semanal durante a duração de cada aula
 - **Ferramenta de tarefas:** GitHub Projects
 
 ## Definição de pronto (DoD)
